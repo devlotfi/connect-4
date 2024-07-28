@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  font-family: "Carter One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+[data-theme="LIGHT"] {
+  --base-100: #e5e9f2;
+  --base-200: #bec6df;
+  --base-content: #515a6c;
+
+  --red-100: #fe2727;
+  --red-200: #a40000;
+  --yellow-100: #f8c100;
+  --yellow-200: #a7690d;
+  --color-content: #ffffff;
+}
+
+[data-theme="DARK"] {
+  --base-100: #2b3143;
+  --base-200: #1d202b;
+  --base-content: #cad0e4;
+
+  --red-100: #fe2727;
+  --red-200: #a40000;
+  --yellow-100: #f8c100;
+  --yellow-200: #a7690d;
+  --color-content: #ffffff;
+}
