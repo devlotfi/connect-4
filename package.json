@@ -1,0 +1,13 @@
+{
+  "name": "connect-4",
+  "packageManager": "yarn@4.2.2",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "dependencies": {
+    "@socket.io/redis-adapter": "^8.3.0",
+    "redis": "^4.7.0",
+    "socket.io": "^4.7.5"
+  }
+}

@@ -3,6 +3,7 @@ import MainLayout from "./layout/main-layout.component";
 import StartPage from "./pages/start-page.component";
 import OnlineGamePage from "./pages/online-game-page.component";
 import LocalGamePage from "./pages/local-game-page.component";
+import SocketIOProvider from "./context/socket-io.context";
 
 export const router = createBrowserRouter([
   {
@@ -15,7 +16,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/online",
-        element: <OnlineGamePage></OnlineGamePage>,
+        element: (
+          <SocketIOProvider>
+            <OnlineGamePage></OnlineGamePage>
+          </SocketIOProvider>
+        ),
       },
       {
         path: "/local",
