@@ -9,12 +9,12 @@ import {
 } from '@nestjs/websockets';
 import { GameService } from './game.service';
 import { Server, Socket } from 'socket.io';
-import { SocketIOMessages } from '../../../common/socket-io-messages';
-import { GameStartedMessage } from '../../../common/messages/game-started.message';
-import { Game } from '../../../common/types/game.type';
 import { UseGuards } from '@nestjs/common';
 import { GameGuard } from 'src/shared/guards/auth.guard';
-import { MakeMoveMessage } from '../../../common/messages/make-move.message';
+import { GameStartedMessage } from 'src/shared/common/messages/game-started.message';
+import { MakeMoveMessage } from 'src/shared/common/messages/make-move.message';
+import { SocketIOMessages } from 'src/shared/common/socket-io-messages';
+import { Game } from 'src/shared/common/types/game.type';
 
 @WebSocketGateway({ cors: true })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {

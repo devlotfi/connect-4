@@ -7,15 +7,15 @@ import {
   Queues,
   TurnCountdownQueuePayload,
 } from 'src/shared/queues';
-import { GameStartedMessage } from '../../../common/messages/game-started.message';
-import { SocketIOMessages } from '../../../common/socket-io-messages';
-import { Game, SerializedGame } from '../../../common/types/game.type';
-import { MakeMoveMessage } from '../../../common/messages/make-move.message';
 import { JwtService } from '@nestjs/jwt';
 import { GameTokenPayload } from 'src/shared/jwt-payload';
 import { WsException } from '@nestjs/websockets';
 import { RedisService } from 'src/redis/redis.service';
 import { RedisTemplates } from 'src/shared/redis-templates';
+import { GameStartedMessage } from 'src/shared/common/messages/game-started.message';
+import { MakeMoveMessage } from 'src/shared/common/messages/make-move.message';
+import { SocketIOMessages } from 'src/shared/common/socket-io-messages';
+import { SerializedGame, Game } from 'src/shared/common/types/game.type';
 
 @Injectable()
 export class GameService {
@@ -32,14 +32,18 @@ export class GameService {
     const payload: PlayerQueuePayload = {
       connectedSocketId: connectedSocket.id,
     };
-    await this.playerQueue.add('PLAYER', payload);
+    await this.playerQueue.add('PLAYER', payload, {
+      jobId: connectedSocket.id,
+    });
   }
 
   public async playerDisconnected(connectedSocket: Socket, server: Server) {
+    console.log('player disconnected');
     const gameId = await this.redisService.client.get(
       RedisTemplates.PLAYER_GAME(connectedSocket.id),
     );
     if (!gameId) {
+      await this.playerQueue.remove(connectedSocket.id);
       return;
     }
 
@@ -56,16 +60,10 @@ export class GameService {
         ? serializedGame.player2
         : serializedGame.player1;
 
-    console.log('player disconencted');
-
     server.to(otherPlayer).emit(SocketIOMessages.OPPONENT_DISCONNECTED);
 
-    const turnCountdownJob = await this.turnCountdownQueue.getJob(
-      serializedGame.turnCountdownJobId,
-    );
-    if (turnCountdownJob) {
-      await turnCountdownJob.moveToCompleted(null, '');
-    }
+    await this.turnCountdownQueue.remove(serializedGame.turnCountdownJobId);
+
     await this.redisService.client.del([
       RedisTemplates.GAME(serializedGame.id),
       RedisTemplates.PLAYER_GAME(serializedGame.player1),
@@ -163,9 +161,7 @@ export class GameService {
         ...game.serialize(),
       });
 
-      server
-        .to([game.player1, game.player2])
-        .emit(SocketIOMessages.GAME_UPDATED, game);
+      this.gameUpdated(server, game);
     } catch (error) {
       console.error(error);
     }

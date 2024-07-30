@@ -3,8 +3,8 @@ import { Job } from 'bullmq';
 import { RedisService } from 'src/redis/redis.service';
 import { Queues, TurnCountdownQueuePayload } from 'src/shared/queues';
 import { RedisTemplates } from 'src/shared/redis-templates';
-import { SerializedGame } from '../../../common/types/game.type';
 import { GameGateway } from './game.gateway';
+import { SerializedGame } from 'src/shared/common/types/game.type';
 
 @Processor(Queues.TURN_COUNTDOWN)
 export class TurnCountdownConsumer extends WorkerHost {

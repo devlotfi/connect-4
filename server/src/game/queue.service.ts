@@ -10,9 +10,9 @@ import {
 import { GameGateway } from './game.gateway';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/redis/redis.service';
-import { Colors, Game } from '../../../common/types/game.type';
 import { v4 as uuid } from 'uuid';
 import { RedisTemplates } from 'src/shared/redis-templates';
+import { Colors, Game } from 'src/shared/common/types/game.type';
 
 @Injectable()
 export class QueueService {
@@ -54,7 +54,7 @@ export class QueueService {
 
       game.turnCountdownJobId = turnCountdownJob.id;
 
-      const [player1AccessToken, player2AccessToken] = await Promise.all([
+      const [player1GameToken, player2GameToken] = await Promise.all([
         this.jwtService.signAsync({
           playerId: player1.data.connectedSocketId,
           gameId: game.id,
@@ -80,11 +80,11 @@ export class QueueService {
         player1.data.connectedSocketId,
         player2.data.connectedSocketId,
         {
-          accessToken: player1AccessToken,
+          gameToken: player1GameToken,
           game,
         },
         {
-          accessToken: player2AccessToken,
+          gameToken: player2GameToken,
           game,
         },
       );
