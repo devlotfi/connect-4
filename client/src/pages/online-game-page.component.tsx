@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { SocketIOContext } from '../context/socket-io.context';
+import { OnlineGameContext } from '../context/online-game.context';
 import { SocketIOMessages } from '../../../common/socket-io-messages';
 
 export default function OnlineGamePage() {

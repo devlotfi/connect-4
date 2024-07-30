@@ -1,29 +1,29 @@
-import { createBrowserRouter } from "react-router-dom";
-import MainLayout from "./layout/main-layout.component";
-import StartPage from "./pages/start-page.component";
-import OnlineGamePage from "./pages/online-game-page.component";
-import LocalGamePage from "./pages/local-game-page.component";
-import SocketIOProvider from "./context/socket-io.context";
+import { createBrowserRouter } from 'react-router-dom';
+import MainLayout from './layout/main-layout.component';
+import StartPage from './pages/start-page.component';
+import OnlineGamePage from './pages/online-game-page.component';
+import LocalGamePage from './pages/local-game-page.component';
+import OnlineGameProvider from './context/online-game.context';
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <MainLayout></MainLayout>,
     children: [
       {
-        path: "/",
+        path: '/',
         element: <StartPage></StartPage>,
       },
       {
-        path: "/online",
+        path: '/online',
         element: (
-          <SocketIOProvider>
+          <OnlineGameProvider>
             <OnlineGamePage></OnlineGamePage>
-          </SocketIOProvider>
+          </OnlineGameProvider>
         ),
       },
       {
-        path: "/local",
+        path: '/local',
         element: <LocalGamePage></LocalGamePage>,
       },
     ],

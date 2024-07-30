@@ -2,17 +2,17 @@ import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { SocketIOMessages } from '../../../common/socket-io-messages';
 
-interface SocketIOContext {
+interface OnlineGameContext {
   socket: Socket | null;
 }
 
-const initialValue: SocketIOContext = {
+const initialValue: OnlineGameContext = {
   socket: null,
 };
 
-export const SocketIOContext = createContext(initialValue);
+export const OnlineGameContext = createContext(initialValue);
 
-export default function SocketIOProvider({ children }: PropsWithChildren) {
+export default function OnlineGameProvider({ children }: PropsWithChildren) {
   const [socket, setSocket] = useState<Socket>(null);
 
   useEffect(() => {
@@ -34,8 +34,8 @@ export default function SocketIOProvider({ children }: PropsWithChildren) {
   }, []);
 
   return (
-    <SocketIOContext.Provider value={{ socket }}>
+    <OnlineGameContext.Provider value={{ socket }}>
       {children}
-    </SocketIOContext.Provider>
+    </OnlineGameContext.Provider>
   );
 }
