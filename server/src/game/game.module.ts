@@ -8,11 +8,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Env } from 'src/shared/env';
 import { QueueService } from './queue.service';
+import { TurnCountdownConsumer } from './turn-countdown.consumer';
 
 @Module({
   imports: [
     BullModule.registerQueue({
       name: Queues.PLAYER,
+    }),
+    BullModule.registerQueue({
+      name: Queues.TURN_COUNTDOWN,
     }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -28,6 +32,6 @@ import { QueueService } from './queue.service';
     }),
     RedisModule,
   ],
-  providers: [GameService, QueueService, GameGateway],
+  providers: [GameService, QueueService, GameGateway, TurnCountdownConsumer],
 })
 export class GameModule {}

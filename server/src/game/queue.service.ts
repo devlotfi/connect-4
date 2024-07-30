@@ -2,17 +2,27 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Queue } from 'bullmq';
-import { Queues } from 'src/shared/queues';
-import { JoinPlayerQueueMessage } from '../../../common/messages/join-player-queue.message';
+import {
+  PlayerQueuePayload,
+  Queues,
+  TurnCountdownQueuePayload,
+} from 'src/shared/queues';
 import { GameGateway } from './game.gateway';
 import { JwtService } from '@nestjs/jwt';
+import { RedisService } from 'src/redis/redis.service';
+import { Colors, Game } from '../../../common/types/game.type';
+import { v4 as uuid } from 'uuid';
+import { RedisTemplates } from 'src/shared/redis-templates';
 
 @Injectable()
 export class QueueService {
   public constructor(
     @InjectQueue(Queues.PLAYER)
-    private readonly playerQueue: Queue<JoinPlayerQueueMessage>,
+    private readonly playerQueue: Queue<PlayerQueuePayload>,
+    @InjectQueue(Queues.TURN_COUNTDOWN)
+    private readonly turnCountdownQueue: Queue<TurnCountdownQueuePayload>,
     private readonly gameGateway: GameGateway,
+    private readonly redisService: RedisService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -20,13 +30,65 @@ export class QueueService {
   public async startGames() {
     const waitingPlayers = await this.playerQueue.getWaiting();
     console.log(waitingPlayers.length);
+    const player1 = waitingPlayers[0];
+    const player2 = waitingPlayers[1];
 
     if (waitingPlayers.length >= 2) {
-      this.gameGateway.gameStarted(
-        waitingPlayers[0].data.connectedSocketId,
-        waitingPlayers[1].data.connectedSocketId,
-        '',
+      const game = new Game();
+      game.id = uuid();
+      game.player1 = player1.data.connectedSocketId;
+      game.player2 = player2.data.connectedSocketId;
+      game.playerTurn = player1.data.connectedSocketId;
+      game.colorTurn = Colors.YELLOW;
+
+      const turnCountdownJob = await this.turnCountdownQueue.add(
+        'TURN_COUNTDOWN',
+        {
+          gameId: game.id,
+        },
+        {
+          removeOnComplete: true,
+          delay: 7000,
+        },
       );
+
+      game.turnCountdownJobId = turnCountdownJob.id;
+
+      const [player1AccessToken, player2AccessToken] = await Promise.all([
+        this.jwtService.signAsync({
+          playerId: player1.data.connectedSocketId,
+          gameId: game.id,
+        }),
+        this.jwtService.signAsync({
+          playerId: player2.data.connectedSocketId,
+          gameId: game.id,
+        }),
+        this.redisService.client.set(
+          RedisTemplates.PLAYER_GAME(player1.data.connectedSocketId),
+          game.id,
+        ),
+        this.redisService.client.set(
+          RedisTemplates.PLAYER_GAME(player2.data.connectedSocketId),
+          game.id,
+        ),
+        this.redisService.client.hSet(RedisTemplates.GAME(game.id), {
+          ...game.serialize(),
+        }),
+      ]);
+
+      this.gameGateway.gameStarted(
+        player1.data.connectedSocketId,
+        player2.data.connectedSocketId,
+        {
+          accessToken: player1AccessToken,
+          game,
+        },
+        {
+          accessToken: player2AccessToken,
+          game,
+        },
+      );
+      console.log('game started');
 
       await Promise.all([
         waitingPlayers[0].remove(),

@@ -17,8 +17,14 @@ export default function SocketIOProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const createdSocket = io(import.meta.env.VITE_WS_SERVER_URL);
-    createdSocket.on(SocketIOMessages.GAME_STARTED, () => {
-      console.log('game started');
+    createdSocket.on(SocketIOMessages.GAME_STARTED, (data) => {
+      console.log('game started', data);
+    });
+    createdSocket.on(SocketIOMessages.GAME_STOPPED, (data) => {
+      console.log('game stopeed', data);
+    });
+    createdSocket.on(SocketIOMessages.GAME_UPDATED, (data) => {
+      console.log('game update', data);
     });
 
     setSocket(createdSocket);
