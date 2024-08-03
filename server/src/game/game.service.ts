@@ -15,7 +15,11 @@ import { RedisTemplates } from 'src/shared/redis-templates';
 import { GameStartedMessage } from 'src/shared/common/messages/game-started.message';
 import { MakeMoveMessage } from 'src/shared/common/messages/make-move.message';
 import { SocketIOMessages } from 'src/shared/common/socket-io-messages';
-import { SerializedGame, Game } from 'src/shared/common/types/game.type';
+import {
+  SerializedGame,
+  Game,
+  Colors,
+} from 'src/shared/common/types/game.type';
 
 @Injectable()
 export class GameService {
@@ -48,7 +52,7 @@ export class GameService {
     }
 
     const serializedGame: SerializedGame =
-      (await this.redisService.client.hGetAll(
+      (await this.redisService.client.hgetall(
         RedisTemplates.GAME(gameId),
       )) as any;
     if (!serializedGame) {
@@ -107,63 +111,101 @@ export class GameService {
     server: Server,
     makeMoveMessage: MakeMoveMessage,
   ): Promise<void> {
-    try {
-      const { gameId, playerId } =
-        await this.jwtService.verifyAsync<GameTokenPayload>(
-          makeMoveMessage.gameToken,
-        );
-
-      if (playerId !== connectedSocket.id) {
-        throw new WsException('Wrong ID');
-      }
-
-      const serializedGame: SerializedGame =
-        (await this.redisService.client.hGetAll(
-          RedisTemplates.GAME(gameId),
-        )) as any;
-      if (!serializedGame) {
-        throw new WsException('Game not found');
-      }
-
-      const game = Game.deserialize(serializedGame);
-
-      if (game.playerTurn !== playerId) {
-        throw new WsException('Not your turn');
-      }
-
-      const turnCountdownJob = await this.turnCountdownQueue.getJob(
-        game.turnCountdownJobId,
+    const { gameId, playerId } =
+      await this.jwtService.verifyAsync<GameTokenPayload>(
+        makeMoveMessage.gameToken,
       );
-      if (turnCountdownJob) {
-        await turnCountdownJob.remove();
-      }
-      const newTurnCountdownJob = await this.turnCountdownQueue.add(
-        'TURN_COUNTDOWN',
-        {
-          gameId: game.id,
-        },
-        {
-          removeOnComplete: true,
-          delay: 7000,
-        },
-      );
-      game.turnCountdownJobId = newTurnCountdownJob.id;
 
-      const selectedColmn = game.grid[makeMoveMessage.column];
-      for (let i = 0; i < selectedColmn.length; i++) {
-        if (selectedColmn[i] === null) {
-          selectedColmn[i] = game.colorTurn;
-          break;
-        }
-      }
-
-      await this.redisService.client.hSet(RedisTemplates.GAME(gameId), {
-        ...game.serialize(),
-      });
-
-      this.gameUpdated(server, game);
-    } catch (error) {
-      console.error(error);
+    const playerGame = this.redisService.client.get(
+      RedisTemplates.PLAYER_GAME(connectedSocket.id),
+    );
+    if (!playerGame) {
+      return;
     }
+
+    await this.redisService.redlock.using(
+      [`move:${playerGame}`],
+      10000,
+      async () => {
+        try {
+          if (playerId !== connectedSocket.id) {
+            throw new WsException('Wrong ID');
+          }
+          const serializedGame: SerializedGame =
+            (await this.redisService.client.hgetall(
+              RedisTemplates.GAME(gameId),
+            )) as any;
+          if (!serializedGame.id) {
+            throw new WsException('Game not found');
+          }
+          const game = Game.deserialize(serializedGame);
+
+          if (game.playerTurn !== playerId) {
+            throw new WsException('Not your turn');
+          }
+
+          const turnCountdownJob = await this.turnCountdownQueue.getJob(
+            game.turnCountdownJobId,
+          );
+          if (turnCountdownJob) {
+            await turnCountdownJob.remove();
+            console.log('job removed');
+          } else {
+            console.log('job not removed');
+          }
+
+          const selectedColmn = game.grid[makeMoveMessage.column];
+          for (let i = 0; i < selectedColmn.length; i++) {
+            if (selectedColmn[i] === null) {
+              selectedColmn[i] = game.colorTurn;
+              break;
+            }
+          }
+          game.colorTurn =
+            game.colorTurn === Colors.YELLOW ? Colors.RED : Colors.YELLOW;
+          console.log(game.checkForWin());
+
+          if (game.checkForWin()) {
+            this.gameUpdated(server, game);
+            server.to(game.playerTurn).emit(SocketIOMessages.PLAYER_WIN);
+            server
+              .to(
+                game.playerTurn === game.player1 ? game.player2 : game.player1,
+              )
+              .emit(SocketIOMessages.PLAYER_LOSS);
+
+            await this.redisService.client.del([
+              RedisTemplates.GAME(serializedGame.id),
+              RedisTemplates.PLAYER_GAME(serializedGame.player1),
+              RedisTemplates.PLAYER_GAME(serializedGame.player2),
+            ]);
+
+            return;
+          }
+
+          const newTurnCountdownJob = await this.turnCountdownQueue.add(
+            'TURN_COUNTDOWN',
+            {
+              gameId: game.id,
+            },
+            {
+              removeOnComplete: true,
+              delay: 7000,
+            },
+          );
+          game.turnCountdownJobId = newTurnCountdownJob.id;
+          game.playerTurn =
+            game.playerTurn === game.player1 ? game.player2 : game.player1;
+
+          await this.redisService.client.hset(RedisTemplates.GAME(gameId), {
+            ...game.serialize(),
+          });
+
+          this.gameUpdated(server, game);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+    );
   }
 }

@@ -9,14 +9,17 @@ import {
 } from '@nestjs/websockets';
 import { GameService } from './game.service';
 import { Server, Socket } from 'socket.io';
-import { UseGuards } from '@nestjs/common';
-import { GameGuard } from 'src/shared/guards/auth.guard';
 import { GameStartedMessage } from 'src/shared/common/messages/game-started.message';
 import { MakeMoveMessage } from 'src/shared/common/messages/make-move.message';
 import { SocketIOMessages } from 'src/shared/common/socket-io-messages';
 import { Game } from 'src/shared/common/types/game.type';
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway(5000, {
+  cors: {
+    origin: '*',
+  },
+  transports: ['websocket'],
+})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Server;
@@ -59,7 +62,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage(SocketIOMessages.MAKE_MOVE)
-  @UseGuards(GameGuard)
   public async makeMove(
     @ConnectedSocket() connectedSocket: Socket,
     @MessageBody() makeMoveMessage: MakeMoveMessage,

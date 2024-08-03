@@ -3,15 +3,22 @@
 @tailwind utilities;
 
 * {
-  font-family: "Carter One", system-ui;
+  font-family: 'Carter One', system-ui;
   font-weight: 400;
   font-style: normal;
 }
 
-[data-theme="LIGHT"] {
+[data-theme='LIGHT'] {
   --base-100: #e5e9f2;
   --base-200: #bec6df;
   --base-content: #515a6c;
+
+  --game-grid: #1b68db;
+  --game-grid-gradient: radial-gradient(
+    circle at center,
+    #1b68db 0% 50%,
+    #70aaff 100%
+  );
 
   --red-100: #fe2727;
   --red-200: #a40000;
@@ -20,10 +27,17 @@
   --color-content: #ffffff;
 }
 
-[data-theme="DARK"] {
+[data-theme='DARK'] {
   --base-100: #2b3143;
   --base-200: #1d202b;
   --base-content: #cad0e4;
+
+  --game-grid: #1b68db;
+  --game-grid-gradient: radial-gradient(
+    circle at center,
+    #1b68db 0% 50%,
+    #70aaff 100%
+  );
 
   --red-100: #fe2727;
   --red-200: #a40000;

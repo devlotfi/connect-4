@@ -1,6 +1,6 @@
-import { Outlet } from "react-router-dom";
-import Logo from "../assets/logo.svg";
-import ThemeToggle from "../components/theme-toggle.component";
+import { Outlet } from 'react-router-dom';
+import Logo from '../assets/logo.svg';
+import ThemeToggle from '../components/theme-toggle/theme-toggle.component';
 
 export default function MainLayout() {
   return (

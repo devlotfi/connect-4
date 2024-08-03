@@ -71,7 +71,7 @@ export class QueueService {
           RedisTemplates.PLAYER_GAME(player2.data.connectedSocketId),
           game.id,
         ),
-        this.redisService.client.hSet(RedisTemplates.GAME(game.id), {
+        this.redisService.client.hset(RedisTemplates.GAME(game.id), {
           ...game.serialize(),
         }),
       ]);

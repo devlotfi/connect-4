@@ -18,7 +18,7 @@ export class TurnCountdownConsumer extends WorkerHost {
   public async process(job: Job<TurnCountdownQueuePayload>) {
     console.log('game stopped');
     const serializedGame: SerializedGame =
-      (await this.redisService.client.hGetAll(
+      (await this.redisService.client.hgetall(
         RedisTemplates.GAME(job.data.gameId),
       )) as any;
 

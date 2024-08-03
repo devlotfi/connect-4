@@ -42,4 +42,67 @@ export class Game {
     game.grid = JSON.parse(serializedGame.grid);
     return game;
   }
+
+  public checkForWin(): boolean {
+    const cols = this.grid.length;
+    const rows = this.grid[0].length;
+
+    // Check horizontal win
+    for (let col = 0; col < cols; col++) {
+      for (let row = 0; row <= rows - 4; row++) {
+        if (
+          this.grid[col][row] &&
+          this.grid[col][row] === this.grid[col][row + 1] &&
+          this.grid[col][row] === this.grid[col][row + 2] &&
+          this.grid[col][row] === this.grid[col][row + 3]
+        ) {
+          return true;
+        }
+      }
+    }
+
+    // Check vertical win
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col <= cols - 4; col++) {
+        if (
+          this.grid[col][row] &&
+          this.grid[col][row] === this.grid[col + 1][row] &&
+          this.grid[col][row] === this.grid[col + 2][row] &&
+          this.grid[col][row] === this.grid[col + 3][row]
+        ) {
+          return true;
+        }
+      }
+    }
+
+    // Check diagonal (bottom-left to top-right) win
+    for (let col = 3; col < cols; col++) {
+      for (let row = 0; row <= rows - 4; row++) {
+        if (
+          this.grid[col][row] &&
+          this.grid[col][row] === this.grid[col - 1][row + 1] &&
+          this.grid[col][row] === this.grid[col - 2][row + 2] &&
+          this.grid[col][row] === this.grid[col - 3][row + 3]
+        ) {
+          return true;
+        }
+      }
+    }
+
+    // Check diagonal (top-left to bottom-right) win
+    for (let col = 0; col <= cols - 4; col++) {
+      for (let row = 0; row <= rows - 4; row++) {
+        if (
+          this.grid[col][row] &&
+          this.grid[col][row] === this.grid[col + 1][row + 1] &&
+          this.grid[col][row] === this.grid[col + 2][row + 2] &&
+          this.grid[col][row] === this.grid[col + 3][row + 3]
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }

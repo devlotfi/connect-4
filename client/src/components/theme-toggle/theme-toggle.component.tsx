@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { ThemeContext } from "../context/theme.context";
-import { Themes } from "../types/themes.type";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
-import { cn } from "../utils/cn";
+import { useContext } from 'react';
+import { ThemeContext } from '../../context/theme.context';
+import { Themes } from '../../types/themes.type';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { cn } from '../../utils/cn';
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useContext(ThemeContext);
@@ -23,8 +23,8 @@ export default function ThemeToggle() {
     >
       <div
         className={cn(
-          "flex justify-center items-center bg-base-content rounded-full h-[1.5rem] w-[1.5rem] text-base-200 duration-300",
-          theme === Themes.DARK && "translate-x-[100%]"
+          'flex justify-center items-center bg-base-content rounded-full h-[1.5rem] w-[1.5rem] text-base-200 duration-300',
+          theme === Themes.DARK && 'translate-x-[100%]',
         )}
       >
         {theme === Themes.LIGHT ? (
