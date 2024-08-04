@@ -1,17 +1,17 @@
 import { useContext } from 'react';
-import { Colors } from '../../common/types/game.type';
 import { cn } from '../../utils/cn';
 import { OnlineGameContext } from '../../context/online-game.context';
+import { Colors } from '../../common/types/colors.type';
 
 interface Props {
-  mode: 'ME' | 'OPPONENT';
+  player: 'ME' | 'OPPONENT';
 }
 
-export default function PlayerCard({ mode }: Props) {
+export default function PlayerCardOnline({ player: player }: Props) {
   const { socket, game } = useContext(OnlineGameContext);
 
   if (game) {
-    if (mode === 'ME') {
+    if (player === 'ME') {
       return (
         <div
           className={cn(

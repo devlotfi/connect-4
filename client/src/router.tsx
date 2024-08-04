@@ -4,6 +4,7 @@ import StartPage from './pages/start-page.component';
 import OnlineGamePage from './pages/online-game-page.component';
 import LocalGamePage from './pages/local-game-page.component';
 import OnlineGameProvider from './context/online-game.context';
+import LocalGameProvider from './context/local-game.context';
 
 export const router = createBrowserRouter([
   {
@@ -24,7 +25,11 @@ export const router = createBrowserRouter([
       },
       {
         path: '/local',
-        element: <LocalGamePage></LocalGamePage>,
+        element: (
+          <LocalGameProvider>
+            <LocalGamePage></LocalGamePage>
+          </LocalGameProvider>
+        ),
       },
     ],
   },

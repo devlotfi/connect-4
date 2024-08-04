@@ -26,7 +26,7 @@ export class QueueService {
     private readonly jwtService: JwtService,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_SECOND)
   public async startGames() {
     const waitingPlayers = await this.playerQueue.getWaiting();
     console.log(waitingPlayers.length);

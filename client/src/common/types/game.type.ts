@@ -1,7 +1,4 @@
-export enum Colors {
-  RED = 'RED',
-  YELLOW = 'YELLOW',
-}
+import { Colors } from './colors.type';
 
 export interface SerializedGame {
   id: string;
@@ -14,12 +11,12 @@ export interface SerializedGame {
 }
 
 export class Game {
-  public id: string;
-  public turnCountdownJobId: string;
-  public player1: string;
-  public player2: string;
-  public playerTurn: string;
-  public colorTurn: Colors;
+  public id!: string;
+  public turnCountdownJobId!: string;
+  public player1!: string;
+  public player2!: string;
+  public playerTurn!: string;
+  public colorTurn!: Colors;
   public grid: Array<Array<Colors | null>> = Array(7)
     .fill(null)
     .map(() => Array(6).fill(null));

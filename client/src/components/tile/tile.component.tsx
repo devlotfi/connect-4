@@ -1,6 +1,6 @@
-import { Colors } from '../../common/types/game.type';
 import RedDisc from '../../assets/red-disc.svg';
 import YellowDisc from '../../assets/yellow-disc.svg';
+import { Colors } from '../../common/types/colors.type';
 import './tile.css';
 
 interface Props {

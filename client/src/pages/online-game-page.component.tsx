@@ -1,13 +1,13 @@
 import { useContext } from 'react';
 import { OnlineGameContext } from '../context/online-game.context';
 import Loader from '../components/loader/loader.component';
-import PlayerCard from '../components/player-card/player-card.component';
+import PlayerCardOnline from '../components/player-card/player-card-online.component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { SocketIOMessages } from '../common/socket-io-messages';
 import { MakeMoveMessage } from '../common/messages/make-move.message';
 import Tile from '../components/tile/tile.component';
-import { Colors } from '../common/types/game.type';
+import { Colors } from '../common/types/colors.type';
 
 export default function OnlineGamePage() {
   const { socket, game, gameToken, timer } = useContext(OnlineGameContext);
@@ -47,9 +47,9 @@ export default function OnlineGamePage() {
     <div className="flex flex-1 flex-col items-center">
       <div className="flex flex-col">
         <div className="flex justify-between items-center py-[1rem]">
-          <PlayerCard mode="ME"></PlayerCard>
+          <PlayerCardOnline player="ME"></PlayerCardOnline>
           <div className="flex">{timer} s</div>
-          <PlayerCard mode="OPPONENT"></PlayerCard>
+          <PlayerCardOnline player="OPPONENT"></PlayerCardOnline>
         </div>
         <div className="flex justify-center">
           <div className="flex mt-[5rem] p-[0.7rem] bg-game-grid rounded-3xl space-x-3">

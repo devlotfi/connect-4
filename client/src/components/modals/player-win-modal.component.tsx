@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface Props {
   modalRef: React.RefObject<HTMLDialogElement>;
+  player?: string;
 }
 
-export default function PlayerWinModal({ modalRef }: Props) {
+export default function PlayerWinModal({ modalRef, player }: Props) {
   const navigate = useNavigate();
 
   return (
@@ -18,7 +19,7 @@ export default function PlayerWinModal({ modalRef }: Props) {
             icon={faTrophy}
           ></FontAwesomeIcon>
           <div className="flex text-center text-[20pt] text-base-content">
-            You won
+            {player ? `${player} won` : 'You won'}
           </div>
           <button
             onClick={() => navigate('/')}
