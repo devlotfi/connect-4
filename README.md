@@ -9,7 +9,6 @@ Connect 4 game with multiplayer and the ability to run on a multi instance serve
 - [Preview](#-preview)
 
 # 💻 Tech stack
-<img src="https://skillicons.dev/icons?i=html,css,tailwind,typescript,react,nodejs,nest,redis&perline=5" />
 
 ## Frontend
 
