@@ -11,6 +11,28 @@ Connect 4 game with multiplayer and the ability to run on a multi instance serve
 # 💻 Tech stack
 <img src="https://skillicons.dev/icons?i=html,css,tailwind,typescript,react,nodejs,nest,redis&perline=5" />
 
+## Frontend
+
+<p float="left">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/html.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/css.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/ts.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/tailwind.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/react.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/fontawesome.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/reactquery.svg">
+</p>
+
+## Backend
+
+<p float="left">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/nodejs.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/nestjs.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/redis.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/socketio.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/jwt.svg">
+</p>
+
 # 📂 Project Setup
 
 ## Requirements
