@@ -20,6 +20,7 @@ Connect 4 game with multiplayer and the ability to run on a multi instance serve
   <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/react.svg">
   <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/fontawesome.svg">
   <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/reactquery.svg">
+  <img height="50px" src="https://github.com/devlotfi/stack-icons/blob/main/icons/vite.svg">
 </p>
 
 ## Backend
