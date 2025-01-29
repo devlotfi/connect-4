@@ -1,4 +1,4 @@
-<img height="100px" width="100px" src="https://github.com/devlotfi/connect-4/blob/main/github-assets/logo.svg">
+<img height="100px" width="100px" src="https://raw.githubusercontent.com/devlotfi/connect-4/main/github-assets/logo.svg">
 
 # 📜 connect-4
 Connect 4 game with multiplayer and the ability to run on a multi instance server
@@ -60,5 +60,5 @@ $ yarn run dev
 
 # 📷 Preview
 
-<img src="https://github.com/devlotfi/connect-4/blob/main/github-assets/preview-1.png">
-<img src="https://github.com/devlotfi/connect-4/blob/main/github-assets/preview-2.png">
+<img src="https://raw.githubusercontent.com/devlotfi/connect-4/main/github-assets/preview-1.png">
+<img src="https://raw.githubusercontent.com/devlotfi/connect-4/main/github-assets/preview-2.png">
